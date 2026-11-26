@@ -91,6 +91,31 @@ version:        0.0.2-apertar-crops
 If it does not, Raspberry Pi OS is still loading the stock `imx477` module
 instead of this DKMS module.
 
+## Pinefeat CEF168 lens controller
+
+The package also carries the [Pinefeat CEF168](https://github.com/pinefeat/cef168)
+driver (`cef168.ko`, GPL-2.0, vendored from upstream commit `8380abb`), which
+controls focus and aperture of a Canon EF lens through the Pinefeat adapter at
+I2C address 0x0d, next to the sensor at 0x1a.
+
+The lens is off by default; plain `dtoverlay=imx477` behaves as before. To
+turn it on add the `cef168` parameter:
+
+```ini
+dtoverlay=imx477,cef168
+# camera on CAM0:
+dtoverlay=imx477,cef168,cam0
+```
+
+`setup.sh` installs both `imx477.ko` and `cef168.ko` in one DKMS package, so
+the lens driver is always there when the overlay asks for it. Do not enable
+the lens node by other means (for example a hand-edited overlay) without
+`cef168.ko` installed: the sensor then waits forever for the lens subdevice
+and the camera never registers.
+
+Autofocus from libcamera also needs `rpi.af` in the camera tuning file; the
+driver only exposes the lens controls.
+
 ## Notes
 
 The added crop modes reuse Raspberry Pi's known-good base IMX477 mode register
