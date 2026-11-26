@@ -9,8 +9,20 @@
 	compatible = "sony,imx477";
 };
 
+/ {
+	/* Dormant: link the sensor to the lens controller (dtparam cef168) */
+	fragment@98 {
+		target = <&cam_node>;
+		__dormant__ {
+			lens-focus = <&vcm_node>;
+		};
+	};
+};
+
 /{
 	__overrides__ {
+		cef168 = <&vcm_node>,"status",
+			 <0>,"=98";
 		sync-sink = <&cam_node>,"trigger-mode:0=2";
 		sync-source = <&cam_node>,"trigger-mode:0=1";
 	};
