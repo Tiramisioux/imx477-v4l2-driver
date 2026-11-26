@@ -1,4 +1,5 @@
 obj-m += imx477.o
+obj-m += cef168.o
 
 KDIR ?= /lib/modules/$(shell uname -r)/build
 
